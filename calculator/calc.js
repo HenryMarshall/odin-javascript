@@ -1,27 +1,31 @@
 
 // define operations of the calculator
-var calcOperations = {
+var calcOp = {
   "add":      function(x,y) { return x + y; },
   "subtract": function(x,y) { return x - y; },
   "multiply": function(x,y) { return x * y; },
-  "divide":   function(x,y) { return x / y; }
+  "divide":   function(x,y) { return x / y; },
+
+  "clearState": function(clearDisplay) {
+    console.log('Clearing');
+    calcState.buffer = '';
+    calcState.operation = null;
+    calcState.firstValue = null;
+
+    // We want to clear state, but retain display if called as part of #equal
+    if (clearDisplay) {
+      calcOp.display(calcState.buffer);
+    };
+  },
+  "display": function(number) {
+    $('input').val(number);
+  }
 };
 
 var calcState = {
   "buffer": '',
   "operation": null,
-  "firstValue": null,
-  "secondValue": null
-};
-
-function buildBuffer (elem, buffer) {
-  var number = $(elem).text();
-  return buffer + number;
-};
-
-function display (number) {
-  console.log(number);
-  $('input').val(number);
+  "firstValue": null
 };
 
 $('td').click(function(){
@@ -30,14 +34,12 @@ $('td').click(function(){
 
   switch (dataFunction) {
     case 'clear':
-      calcState.buffer = '';
-      calcState.firstValue = null;
-      calcState.operation = null;
+      calcOp.clearState(true);
       break;
 
     case 'number':
-      calcState.buffer = buildBuffer(this, calcState.buffer);
-      display(Number(calcState.buffer));
+      calcState.buffer += $(this).text();
+      calcOp.display(calcState.buffer);
       break;
 
     case 'operation':
@@ -48,15 +50,11 @@ $('td').click(function(){
 
     case 'equal':
       var secondValue = Number(calcState.buffer);
-      calcState.buffer = '';
-      var answer = calcOperations[calcState.operation] (calcState.firstValue,
+      var answer = calcOp[calcState.operation] (calcState.firstValue,
                                                         secondValue);
-      display(answer);
+      calcOp.display(answer);
 
-      // not DRY -- should call clear internally
-      calcState.buffer = '';
-      calcState.firstValue = null;
-      calcState.operation = null;
+      calcOp.clearState(false);
       break;
 
   }
