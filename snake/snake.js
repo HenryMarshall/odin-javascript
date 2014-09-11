@@ -35,13 +35,31 @@ var grid = {
 
 var snake = {
   position: [[20,20]],
-  direction: 'e'
+  direction: 'e',
+
+  changeDirection: function(keydownEvent) {
+    var directions = ['w', 'n', 'e', 's'],
+        newDirection = directions[keydownEvent.keyCode - 37],
+        currentDirectionIndex = directions.indexOf(snake.direction),
+        oppositeDirection = directions[(currentDirectionIndex + 2) % 4];
+
+    if (newDirection !== snake.direction) {
+      // You don't want a snake crashing into its own neck by trying to switch
+      // to moving in the direct opposite direction if it is 2+ length.
+      if (newDirection !== oppositeDirection || snake.position.length === 1) {
+        snake.direction = newDirection;
+        console.log(snake.direction);
+      };
+    };
+  }
 };
 
 
 grid.initialize();
 
-
+$('body').keydown(function(evt) {
+  snake.changeDirection(evt);
+});
 
 // end doc ready
 });
