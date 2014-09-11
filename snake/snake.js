@@ -35,20 +35,25 @@ var grid = {
 
 var snake = {
   position: [[10,10]],
-  direction: 'e',
+  direction: 'paused',
 
   changeDirection: function(keydownEvent) {
-    var directions = ['w', 'n', 'e', 's'],
-        newDirection = directions[keydownEvent.keyCode - 37],
-        currentDirectionIndex = directions.indexOf(snake.direction),
-        oppositeDirection = directions[(currentDirectionIndex + 2) % 4];
 
-    if (newDirection !== snake.direction) {
-      // You don't want a snake crashing into its own neck by trying to switch
-      // to moving in the direct opposite direction if it is 2+ length.
-      if (newDirection !== oppositeDirection || snake.position.length === 1) {
-        snake.direction = newDirection;
-        console.log(snake.direction);
+    // only respond to arrow keys
+    if ( 37 <= keydownEvent.keyCode && keydownEvent.keyCode <= 40) {
+
+      var directions = ['w', 'n', 'e', 's'],
+          newDirection = directions[keydownEvent.keyCode - 37],
+          currentDirectionIndex = directions.indexOf(snake.direction),
+          oppositeDirection = directions[(currentDirectionIndex + 2) % 4];
+
+      if (newDirection !== snake.direction) {
+        // You don't want a snake crashing into its own neck by trying to switch
+        // to moving in the direct opposite direction if it is 2+ length.
+        if (newDirection !== oppositeDirection || snake.position.length === 1) {
+          snake.direction = newDirection;
+          console.log(snake.direction);
+        };
       };
     };
   },
@@ -59,6 +64,24 @@ var snake = {
       var cellId = '#' + segmentPosition[0] + '-' + segmentPosition[1];
       $(cellId).addClass('snake');
     });
+  },
+
+  move: function() {
+    var movementDirection = {
+          w: [0,-1],
+          n: [-1,0],
+          e: [0,1],
+          s: [1,0],
+          paused: [0,0]
+        },
+        newHead = [
+          this.position[0][0] + movementDirection[snake.direction][0],
+          this.position[0][1] + movementDirection[snake.direction][1]
+        ];
+
+    // add the newHead to the front and remove the tail
+    this.position.unshift(newHead);
+    this.position.pop();
   }
 };
 
@@ -71,8 +94,9 @@ $('body').keydown(function(evt) {
 });
 
 setInterval(function(){
-  
-}, 500);
+  snake.move();
+  snake.render();
+}, 250);
 
 // end doc ready
 });
