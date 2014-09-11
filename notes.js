@@ -1,3 +1,6 @@
+// shut up my linter
+var console,alert, $, document;
+
 var foo = 1;
 var bar = 2;
 console.log( foo + bar ); // '12'
@@ -126,3 +129,68 @@ secondObject.sayHello = sayHello;
 sayHello();               // "Hi! My name is the global object"
 myObject.sayHello();      // "Hi! My name is Rebecca"
 secondObject.sayHello();  // "Hi! My name is Colin"
+
+// -----
+
+// types
+/* when you access a primative type you work directly on its value
+ * e.g., string, number, boolean, null, undefined
+ */
+var foo = 1;
+var bar = foo;
+foo = 2;
+bar;              // 1
+
+// when you access a complex type you work on a reference to its value
+// e.g., object, array, function
+var foo = [1,2];
+var bar = foo;
+foo[0] = 2;
+bar;              // [2,2]
+
+
+// use "FIXME: blah" to annotate problems
+// use "TODO: blah" to annotate solutions
+
+/*when attaching data payloads to events pass a hash instead of raw values this
+lets you add more events without having to find and edit existing instances*/
+
+// --- CUSTOM EVENTS ---
+// this moves the switching functionality to the lighbulb
+
+$('.lightbulb').on('changeState', function(e) {
+  var light = $(this);
+  if (light.hasClass('on')) {
+    light.trigger('turnOff');
+  } else {
+    light.trigger('turnOn');
+  }
+}).on('turnOn', function(e) {
+  $(this).removeClass('off').addClass('on');
+}).on('turnOff', function(e) {
+  $(this).removeClass('on').addClass('off');
+});
+
+$('.switch, .clapper').click(function() {
+  $(this).parent().find('.lightbulb').trigger('changeState');
+});
+
+$('#masterSwitch').click(function() {
+  if ($('.lightbulb.on').length) {
+    $('.lightbulb').trigger('turnOff');
+  } else {
+    $('.lightbulb').trigger('turnOn');
+  }
+});
+
+// args for custom events
+
+$(document).on('myCustomEvent', {
+  foo: 'bar'
+}, function(event, arg1, arg2) {
+  console.log(event.data.foo);    // 'bar'
+  console.log(arg1);              // 'bim'
+  console.log(arg2);              // 'baz'
+});
+
+$(document).trigger('myCustomEvent', ["bim", "baz"]);
