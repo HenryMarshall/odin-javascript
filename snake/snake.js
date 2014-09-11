@@ -1,9 +1,14 @@
 $(document).ready(function() {
 
 var grid = {
-  initialize: function() {
-    var gameboard = this.buildArray(50, 30);
-    var gridHtml = this.buildHtml(gameboard);
+  xDimension: undefined,
+  yDimension: undefined,
+
+  initialize: function(x,y) {
+    var gameboard = this.buildArray(x,y),
+        gridHtml = this.buildHtml(gameboard);
+    this.xDimension = x;
+    this.yDimension = y;
     $('#gameboard').append($(gridHtml));
   },
 
@@ -34,8 +39,15 @@ var grid = {
 };
 
 var snake = {
-  position: [[10,10]],
+  initialPosition: [[10,10]],
+  position: undefined,
   direction: 'paused',
+
+  initialize: function() {
+    // style guide's solution to duplicating arrays
+    this.position = this.initialPosition.slice();
+    this.render();
+  },
 
   changeDirection: function(keydownEvent) {
 
@@ -82,21 +94,36 @@ var snake = {
     // add the newHead to the front and remove the tail
     this.position.unshift(newHead);
     this.position.pop();
+  },
+
+  didLose: function(grid) {
+    var headX = snake.position[0][0],
+        headY = snake.position[0][1];
+
+    console.log(headX, headY, grid.xDimension, grid.yDimension);
+
+    return (headX < 0 || headX > grid.xDimension || 
+            headY < 0 || headY > grid.yDimension);
   }
 };
 
 
-grid.initialize();
-snake.render();
+grid.initialize(50,30);
+snake.initialize();
 
 $('body').keydown(function(evt) {
   snake.changeDirection(evt);
 });
 
-setInterval(function(){
+var heartbeat = setInterval(function(){
   snake.move();
-  snake.render();
-}, 250);
+  if (snake.didLose(grid)) {
+    alert('you lost');
+    clearInterval(heartbeat);
+  } else {
+    snake.render();
+  };
+}, 200);
 
 // end doc ready
 });
