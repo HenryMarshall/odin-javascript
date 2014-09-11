@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#content {
+  margin: 0 auto;
+  width: 1000px;
+  /*background-color: orange*/
+}
+
+#gameboard {
+  /*background-color: red*/
+}
+
+.row {
+  /*background-color: green;*/
+}
+
+.cell {
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
+  display: inline-block;
+  background-color: #ddd;
+}
