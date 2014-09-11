@@ -24,3 +24,7 @@
   display: inline-block;
   background-color: #ddd;
 }
+
+.snake {
+  background-color: red;
+}

@@ -34,7 +34,7 @@ var grid = {
 };
 
 var snake = {
-  position: [[20,20]],
+  position: [[10,10]],
   direction: 'e',
 
   changeDirection: function(keydownEvent) {
@@ -51,15 +51,28 @@ var snake = {
         console.log(snake.direction);
       };
     };
+  },
+
+  render: function() {
+    $('.snake').removeClass('snake');
+    snake.position.forEach(function(segmentPosition) {
+      var cellId = '#' + segmentPosition[0] + '-' + segmentPosition[1];
+      $(cellId).addClass('snake');
+    });
   }
 };
 
 
 grid.initialize();
+snake.render();
 
 $('body').keydown(function(evt) {
   snake.changeDirection(evt);
 });
+
+setInterval(function(){
+  
+}, 500);
 
 // end doc ready
 });
