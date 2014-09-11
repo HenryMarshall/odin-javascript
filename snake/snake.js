@@ -7,13 +7,13 @@ var grid = {
       initialize: function(x,y) {
         var gameboard = this.buildArray(x,y),
             gridHtml = this.buildHtml(gameboard);
-        this.xDimension = x;
-        this.yDimension = y;
-        this.dropFood();
+        // FIXME: dimensions work iff backwards
+        this.xDimension = y;
+        this.yDimension = x;
         $('#gameboard').append($(gridHtml));
       },
 
-      buildArray: function(x, y) {
+      buildArray: function(x,y) {
         var grid = [];
         for (var i = y - 1; i >= 0; i--) {
           var row = [];
@@ -37,6 +37,24 @@ var grid = {
         });
         return gridHtml;
       },
+    },
+
+    food = {
+      position: undefined,
+
+      dropFood: function() {
+        var foodX = Math.floor(Math.random() * grid.xDimension + 1);
+        var foodY = Math.floor(Math.random() * grid.yDimension + 1);
+        this.position = [foodX, foodY];
+      },
+
+      // FIXME: contains duplication of functionality in snake.render
+      render: function() {
+        $('.food').removeClass('food');
+        var cellId = '#' + this.position[0] + '-' + this.position[1];
+        $(cellId).addClass('food');
+
+      }
     },
 
     snake = {
@@ -92,24 +110,34 @@ var grid = {
               this.position[0][1] + movementDirection[snake.direction][1]
             ];
 
+        if (this.isPositionFood(newHead)) {
+          // dropFood() replaces existing food -- no need to destroy it
+          food.dropFood();
+        } else {
+          this.position.pop();
+        };
         // add the newHead to the front and remove the tail
         this.position.unshift(newHead);
-        this.position.pop();
+      },
+
+      isPositionFood: function(newHead) {
+        return (food.position[0] === newHead[0] && 
+                food.position[1] === newHead[1]);
       },
 
       didLose: function(grid) {
         var headX = snake.position[0][0],
             headY = snake.position[0][1];
 
-        console.log(headX, headY, grid.xDimension, grid.yDimension);
-
-        return (headX < 0 || headX > grid.xDimension || 
-                headY < 0 || headY > grid.yDimension);
+        return (headX < 0 || headX > grid.xDimension -1 || 
+                headY < 0 || headY > grid.yDimension -1);
       }
     };
 
 
 grid.initialize(50,30);
+food.dropFood(grid);
+food.render();
 snake.initialize();
 
 $('body').keydown(function(evt) {
@@ -122,6 +150,7 @@ var heartbeat = setInterval(function(){
     alert('you lost');
     clearInterval(heartbeat);
   } else {
+    food.render();
     snake.render();
   };
 }, 200);

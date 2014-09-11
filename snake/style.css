@@ -25,6 +25,10 @@
   background-color: #ddd;
 }
 
+.food {
+  background-color: blue;
+}
+
 .snake {
   background-color: red;
 }
