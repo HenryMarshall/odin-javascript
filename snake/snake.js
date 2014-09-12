@@ -43,8 +43,8 @@ var grid = {
       position: undefined,
 
       dropFood: function() {
-        var foodX = Math.floor(Math.random() * grid.xDimension + 1);
-        var foodY = Math.floor(Math.random() * grid.yDimension + 1);
+        var foodX = Math.floor(Math.random() * grid.xDimension);
+        var foodY = Math.floor(Math.random() * grid.yDimension);
         this.position = [foodX, foodY];
       },
 
@@ -83,7 +83,6 @@ var grid = {
             // switch to moving in the opposite direction if 2+ in length.
             if (newDirection !== oppositeDirection || snake.position.length === 1) {
               snake.direction = newDirection;
-              console.log(snake.direction);
             };
           };
         };
@@ -125,18 +124,31 @@ var grid = {
                 food.position[1] === newHead[1]);
       },
 
-      didLose: function(grid) {
+      didLose: function() {
         var headX = snake.position[0][0],
-            headY = snake.position[0][1];
+            headY = snake.position[0][1],
+            touchEdge = (headX < 0 || headX > grid.xDimension -1 || 
+                         headY < 0 || headY > grid.yDimension -1);
 
-        return (headX < 0 || headX > grid.xDimension -1 || 
-                headY < 0 || headY > grid.yDimension -1);
+        return (touchEdge || this.touchSelf());
+      },
+
+      touchSelf: function() {
+        var head = this.position[0],
+            body = this.position.slice(1);
+        for (var i = body.length - 1; i >= 0; i--) {
+          if (head[0] === body[i][0] && head[1] === body[i][1]) {
+            console.log("touch");
+            return true;
+          };
+        };
+        return false;
       }
     };
 
 
 grid.initialize(50,30);
-food.dropFood(grid);
+food.dropFood();
 food.render();
 snake.initialize();
 
@@ -146,14 +158,14 @@ $('body').keydown(function(evt) {
 
 var heartbeat = setInterval(function(){
   snake.move();
-  if (snake.didLose(grid)) {
+  if (snake.didLose()) {
     alert('you lost');
     clearInterval(heartbeat);
   } else {
     food.render();
     snake.render();
   };
-}, 200);
+}, 150);
 
 // end doc ready
 });
