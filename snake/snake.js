@@ -68,6 +68,7 @@ var grid = {
       direction: 'paused',
 
       initialize: function() {
+        this.direction = 'paused';
         // style guide's solution to duplicating arrays
         this.position = this.initialPosition.slice();
         this.render();
@@ -157,7 +158,9 @@ var grid = {
       points: 0,
 
       initialize: function() {
-        grid.initialize(50,30);
+
+        this.heartbeatTimeout = 150;
+        this.points = 0;
         food.initialize();
         snake.initialize();
 
@@ -189,9 +192,17 @@ var grid = {
       runGame: function() {
         snake.move();
         if (snake.didLose()) {
-          console.log('you lost');
-          clearInterval(gameInstance);
-        } else {
+          if (confirm('Play Again?')) {
+            clearInterval(gameInstance);
+            snake.direction = 'paused';
+            game.initialize();
+            this.gameInstance();
+          } else {
+            clearInterval(gameInstance);
+          }
+        } 
+        else {
+
           food.render();
           snake.render();
         };
@@ -203,6 +214,7 @@ var grid = {
       }
     };
 
+grid.initialize(50,30);
 game.initialize();
 
 // end of $(document).ready
