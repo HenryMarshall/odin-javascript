@@ -112,6 +112,7 @@ var grid = {
         if (this.isPositionFood(newHead)) {
           // dropFood() replaces existing food -- no need to destroy it
           food.dropFood();
+          game.scorePoints();
         } else {
           this.position.pop();
         };
@@ -138,12 +139,22 @@ var grid = {
             body = this.position.slice(1);
         for (var i = body.length - 1; i >= 0; i--) {
           if (head[0] === body[i][0] && head[1] === body[i][1]) {
-            console.log("touch");
             return true;
           };
         };
         return false;
       }
+    },
+
+    game = {
+      points: 0,
+
+      scorePoints: function() {
+        this.points += 9 + snake.position.length;
+        console.log("game.points: ",game.points);
+        $('#points').text(this.points);
+      }
+
     };
 
 
