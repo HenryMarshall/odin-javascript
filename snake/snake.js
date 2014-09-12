@@ -42,6 +42,11 @@ var grid = {
     food = {
       position: undefined,
 
+      initialize: function() {
+        this.dropFood();
+        this.render();
+      },
+
       dropFood: function() {
         var foodX = Math.floor(Math.random() * grid.xDimension);
         var foodY = Math.floor(Math.random() * grid.yDimension);
@@ -113,6 +118,7 @@ var grid = {
           // dropFood() replaces existing food -- no need to destroy it
           food.dropFood();
           game.scorePoints();
+          game.changeDifficulty(20);
         } else {
           this.position.pop();
         };
@@ -147,36 +153,57 @@ var grid = {
     },
 
     game = {
+      heartbeatTimeout: 150,
       points: 0,
+
+      initialize: function() {
+        grid.initialize(50,30);
+        food.initialize();
+        snake.initialize();
+
+        $('body').keydown(function(evt) {
+          snake.changeDirection(evt);
+        });
+
+        // intentionally a global variable
+        this.gameInstance();
+
+      },
 
       scorePoints: function() {
         this.points += 9 + snake.position.length;
         console.log("game.points: ",game.points);
         $('#points').text(this.points);
-      }
+      },
 
+      changeDifficulty: function(ms) {
+        // 50ms per round is the highest difficulty
+        if (this.heartbeatTimeout > 50 ) {
+          this.heartbeatTimeout -= ms;
+          clearInterval(gameInstance);
+
+          this.gameInstance();
+        }
+      },
+
+      runGame: function() {
+        snake.move();
+        if (snake.didLose()) {
+          console.log('you lost');
+          clearInterval(gameInstance);
+        } else {
+          food.render();
+          snake.render();
+        };
+      },
+
+      gameInstance: function() {
+        // intentionally a global variable
+        gameInstance = setInterval(game.runGame, game.heartbeatTimeout);
+      }
     };
 
+game.initialize();
 
-grid.initialize(50,30);
-food.dropFood();
-food.render();
-snake.initialize();
-
-$('body').keydown(function(evt) {
-  snake.changeDirection(evt);
-});
-
-var heartbeat = setInterval(function(){
-  snake.move();
-  if (snake.didLose()) {
-    alert('you lost');
-    clearInterval(heartbeat);
-  } else {
-    food.render();
-    snake.render();
-  };
-}, 150);
-
-// end doc ready
+// end of $(document).ready
 });
