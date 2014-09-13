@@ -36,6 +36,21 @@ var carousel = {
     $(newSelected).addClass('selected');
   },
 
+  nextPrevButton: function() {
+
+    var self = this;
+
+    $('button').on('click', function() {
+      var advanceBy = Number($(this).attr('data-advance')),
+          newPositionWrap = (self.position + advanceBy) % self.imageCount;
+          newPosition = (newPositionWrap >= 0) 
+            ? newPositionWrap
+            : (self.imageCount + newPositionWrap);
+
+      self.position = newPosition;
+      self.paintSelector();
+    });
+  }
 
 
 };
