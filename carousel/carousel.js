@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-var carousel = {
+carousel = {
   position: 0,
   imageCount: 0,
 
@@ -10,10 +10,14 @@ var carousel = {
 
     // hide all but the first image
     $($img).slice(1).hide();
-
     this.buildSelectors($img);
 
+    // ui
     this.nextPrevButton();
+    this.selectorButton();
+
+    // listens for changes
+    this.onChange();
   },
 
   buildSelectors: function($img) {
@@ -22,11 +26,21 @@ var carousel = {
 
     for (var i = 0, j = this.imageCount; i < j; i++) {
       var imageId = $($img).eq(i).attr('id');
-      imageSelectors += '<a href="#' + imageId + '"></a>';
+      imageSelectors += '<a href="#' + imageId 
+                      + '" data-position="' + i + '""></a>';
     };
     $(imageSelectors).appendTo($('#image-selectors'));
 
     this.paintSelector();
+  },
+
+
+  onChange: function() {
+    var self = this;
+    $('#carousel').on('pictureChange', function() {
+      self.paintSelector();
+      self.changeVisibleImage();
+    });
   },
 
   paintSelector: function() {
@@ -36,11 +50,18 @@ var carousel = {
     $(newSelected).addClass('selected');
   },
 
+  changeVisibleImage: function() {
+    $('img').hide().eq(this.position).show();
+  },
+
+
+  // ui elements
   nextPrevButton: function() {
 
     var self = this;
 
     $('button').on('click', function() {
+
       var advanceBy = Number($(this).attr('data-advance')),
           newPositionWrap = (self.position + advanceBy) % self.imageCount;
           newPosition = (newPositionWrap >= 0) 
@@ -48,7 +69,28 @@ var carousel = {
             : (self.imageCount + newPositionWrap);
 
       self.position = newPosition;
-      self.paintSelector();
+
+      console.log("this.position: ",self.position);
+      $('#carousel').trigger('pictureChange');
+
+    });
+  },
+
+  selectorButton: function() {
+
+    var self = this;
+
+    $('#image-selectors a').on('click', function(e) {
+
+      e.preventDefault();
+
+      var targetPictureId = $(this).attr('href'),
+          newPosition = Number($(this).attr('data-position'));
+
+      self.position = newPosition;
+      console.log("this.position: ",self.position);
+      $('#carousel').trigger('pictureChange');
+
     });
   }
 
