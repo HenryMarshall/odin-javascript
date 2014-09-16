@@ -194,3 +194,25 @@ $(document).on('myCustomEvent', {
 });
 
 $(document).trigger('myCustomEvent', ["bim", "baz"]);
+
+
+// -----
+
+// Find if property exists on an object
+var school = { schoolName: 'MIT' };
+console.log("schoolName" in school);                // true
+console.log(school.hasOwnProperty("schoolName"));   // true
+
+// toString is inherited
+console.log("toString" in school);                  // true
+console.log(school.hasOwnProperty("toString"));     // false
+
+console.log("foo" in school);                       // false
+console.log(school.hasOwnProperty("foo"));          // false
+
+
+// to enumerate over an object use for in
+var school = { schoolName:'MIT', schoolLocation:"MA" };
+for (var eachItem in school) {
+  console.log(eachItem);
+}
