@@ -1,4 +1,4 @@
-#carousel-container {
+#content {
   width: 500px;
   /*background-color: green;*/
   margin: 0 auto;
@@ -20,10 +20,10 @@
 }
 
 img {
-  -webkit-transition: all 0.5s linear;
-  -moz-transition: all 0.5s linear;
-  -o-transition: all 0.5s linear;
-  transition: all 0.5s linear;
+  -webkit-transition: visibility 0.5s linear;
+  -moz-transition: visibility 0.5s linear;
+  -o-transition: visibility 0.5s linear;
+  transition: visibility 0.5s linear;
 }
 
 /*

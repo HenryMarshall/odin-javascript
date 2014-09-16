@@ -12,6 +12,9 @@ carousel = {
     $($img).slice(1).hide();
     this.buildSelectors($img);
 
+    // timer
+    
+
     // ui
     this.nextPrevButton();
     this.selectorButton();
