@@ -34,6 +34,15 @@ secondUser = new User('Peter', 'peter@example.com');
 secondUser.saveScore(18);
 console.log(secondUser.showNameAndScores());
 
+
+// --------- //
+
+function inheritPrototype(childObject, parentObject) {
+  var copyOfParent = Object.create(parentObject.prototype);
+  copyOfParent.constructor = childObject;
+  childObject.prototype = copyOfParent;
+}
+
 function Question(theQuestion, theChoices, theCorrectAnswer) {
   this.question = theQuestion;
   this.choices = theChoices;
@@ -42,13 +51,13 @@ function Question(theQuestion, theChoices, theCorrectAnswer) {
 
   // private properties: these cannot be changed by instances
   var newDate = new Date(),
-      QUIZ_CREATED_DATE = newDate.toLocalDateString();
+      QUIZ_CREATED_DATE = newDate;
 
   // This is the only way to access QUIZ_CREATED_DATE.
   // This is an example of a privilege method: it can access private properties,
   // and itself be called publically.
   this.getQuizDate = function() {
-    return QUIZ_CREATED_DATE;
+    return QUIZ_CREATED_DATE.toLocaleDateString();
   };
 
   // Confirm the quiz was created.
@@ -63,7 +72,7 @@ function Question(theQuestion, theChoices, theCorrectAnswer) {
     return this.userAnswer;
   };
 
-  Question.prototype.displayQuesction = function() {
+  Question.prototype.displayQuestion = function() {
     var questionToDisplay = '<div class="question">' + this.question
                           + '</div><ul>',
         choiceCounter = 0;
@@ -78,4 +87,41 @@ function Question(theQuestion, theChoices, theCorrectAnswer) {
 
   };
 
-}
+};
+
+function MultipleChoiceQuestion(theQuestion, theChoices, theCorrectAnswer) {
+  Question.call(this, theQuestion, theChoices, theCorrectAnswer);
+
+  // inherit the methos and properties from question
+};
+
+inheritPrototype(MultipleChoiceQuestion, Question);
+
+function DragDropQuestion(theQuestion, theChoices, theCorrectAnswer) {
+  Question.call(this, theQuestion, theChoices, theCorrectAnswer);
+};
+
+inheritPrototype(DragDropQuestion, Question);
+// override the displayQuestion method it inherited
+DragDropQuestion.prototype.displayQuestion = function() {
+  // just return the question; implementation is beyond the scope of this app
+  console.log(this.question);
+};
+
+
+// Test our inheritances
+var allQuestions = [
+  new MultipleChoiceQuestion("Who is the PM of England?",
+                            ["Obama", "Blair", "Brown", "Cameron"], 3),
+  
+  new MultipleChoiceQuestion("What is the capital of Brazil?",
+                            ["Sao Paulo", "Rio de Janiero", 'Brasilia'], 2),
+
+  new DragDropQuestion('Drag the correct city to the world map.',
+                      ['Washington DC', 'Rio de Janiero', 'Stockholm'], 0)
+];
+
+// Display all the questions
+allQuestions.forEach(function(eachQuestion) {
+  eachQuestion.displayQuestion();
+});
