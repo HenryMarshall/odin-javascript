@@ -216,3 +216,35 @@ var school = { schoolName:'MIT', schoolLocation:"MA" };
 for (var eachItem in school) {
   console.log(eachItem);
 }
+
+
+// -----
+
+// Closures
+
+// weirdly this works in a browser, but not when run by node
+
+// lets manipulate 'this' with a basic example
+var user = "johnsmith";
+var module = {
+  getUser: function() {
+    return this.user;
+  },
+  user: 'janedoe'
+};
+
+// module.getUser() is called where 'module' is 'this' and 'module.user' is
+// returned
+module.getUser();     // janedoe
+
+// let's now store a reference in the global vrsion of 'this'
+var getUser = module.getUser;
+
+// getUser() called, 'this' is global, 'user' is returned
+getUser();            // johnsmith
+
+// store a ref with 'module' bound as 'this'
+var boundGetUser = getUser.bind(module);
+
+// boundGetUser() called, 'module' is 'this' again, 'module.user' returned
+boundGetUser();
