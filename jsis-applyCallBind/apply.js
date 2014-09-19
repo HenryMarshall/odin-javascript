@@ -1,0 +1,24 @@
+// global var for demonstration
+var avgScore = 'global avgScore';
+
+// global function
+function avg (scores) {
+  var sumOfScores = scores.reduce(function(prev, curr, idx, arr) {
+    return prev + curr;
+  });
+
+  // 'this' will be bound to the global obj unless we set it with call or apply
+  this.avgScore = sumOfScores / scores.length;
+}
+
+var gameController = {
+  scores: [20, 34, 55, 46, 77],
+  avgScore: null
+};
+
+// If we execute the avg function thus, 'this' inside the function is bound to
+// the global window object
+avg (gameController.scores);
+// Proof
+console.log("avgScore: ",avgScore);
+console.log("gameController.avgScore: ",gameController.avgScore);
