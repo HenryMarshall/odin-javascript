@@ -20,4 +20,4 @@ var myObj = {
     }.bind(this));
   }
 
-}
+};
