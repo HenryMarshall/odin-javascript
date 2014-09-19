@@ -1,3 +1,5 @@
+// this doesn't work in node; it must be run in the browser; visit ./apply.html
+
 // global var for demonstration
 var avgScore = 'global avgScore';
 
@@ -20,5 +22,14 @@ var gameController = {
 // the global window object
 avg (gameController.scores);
 // Proof
+console.log("avgScore: ",avgScore);
+console.log("gameController.avgScore: ",gameController.avgScore);
+
+// reset global avgScore
+avgScore = 'global avgScore';
+
+// to set 'this' explicitly so that it is bound to gameController we use call()
+avg.call (gameController, gameController.scores);
+
 console.log("avgScore: ",avgScore);
 console.log("gameController.avgScore: ",gameController.avgScore);
