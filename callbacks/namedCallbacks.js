@@ -14,7 +14,11 @@ function logStuff(userData) {
 
 function getInput(options, callback) {
   // allUserData.push(options);
-  callback(options);
+
+  // Make sure the callback is a function.
+  if (typeof callback === 'function') {
+    callback(options);
+  }
 }
 
 getInput({name:'Rich', speciality:'JS'}, logStuff);
