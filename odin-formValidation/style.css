@@ -1,3 +1,15 @@
-input {
+form {
+  width: 800px;
+}
+
+input, label {
   display: block;
+}
+
+input.error {
+  background-color: red;
+}
+
+label.error {
+  margin-left: 80px;
 }

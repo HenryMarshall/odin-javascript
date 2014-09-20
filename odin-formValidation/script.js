@@ -1,10 +1,4 @@
-$.validator.setDefaults({
-  submitHandler: function() {
-    alert('submitted');
-  }
-})
-
-(function(){
+$(document).ready(function() {
 
 $('#signup').validate({
   rules: {
@@ -40,5 +34,5 @@ $('#signup').validate({
   }
 });
 
-// end of iife
-})();
+// end of doc ready
+});
